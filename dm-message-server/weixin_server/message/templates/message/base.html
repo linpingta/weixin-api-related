@@ -1,0 +1,24 @@
+<html>
+	<head>
+		{% load staticfiles %}
+        	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		{% block ext_css %}{% endblock ext_css %}
+
+        	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		{% block ext_js %}{% endblock ext_js %}
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{% block title %}d3分析系统{% endblock title%}</title>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				{% block navigation %}
+				{% endblock navigation %}
+			</div>
+			{% block content %}
+			{% endblock content %}
+		</div>
+	</body>
+</html>

@@ -1,0 +1,51 @@
+{% extends 'message/base.html' %}
+{% load staticfiles %}
+
+{% block ext_css %}
+<link rel="stylesheet" type="text/css" href="{% static "message/css/watch.css" %}">
+{% endblock ext_css %}
+
+{% block content %}
+<div class="row">
+	<div class="col-xs-12">
+		<p class="watch-title">任务监控</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-offset-8 col-xs-4">
+	<form action="{% url 'task_create' %}" method="get">
+		<input type="submit" value="新建任务" class="btn btn-primary"/>
+	</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+	<table class="table table-striped">
+		<thead class="thead-inverse">
+			<tr>
+				<th>#</th>
+				<th>名称</th>
+				<th>类别</th>
+				<th>时间范围</th>
+				<th>报警条件</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for task_info in task_infos %}
+			<tr>
+				<th scope="row">{{ task_info.id }}</th>
+				<td><a href="{% url 'task_detail' task_info.id %}">{{ task_info.name }}</a></td>
+				<td>{{ task_info.ad_type }}</td>
+				{% if task_info.check_type == 'daily '%}
+				<td>每天</td>
+				{% else %}
+				<td>完整周期</td>
+				{% endif %}
+				<td>ROI小于{{ task_info.roi }}%</td>
+			</tr>
+		{% endfor%}
+		</tbody>
+	</table>
+	</div>
+</div>
+{% endblock content %}

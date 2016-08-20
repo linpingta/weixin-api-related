@@ -1,0 +1,27 @@
+{% extends 'message/base.html' %}
+{% load staticfiles %}
+
+{% block ext_css %}
+<link rel="stylesheet" type="text/css" href="{% static "message/css/watch.css" %}">
+{% endblock ext_css %}
+
+{% block content %}
+<div class="row">
+	<div class="col-xs-12">
+		<p class="watch-title">通用监控</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+	<form action="{% url "task_create"%}" method="post">
+		{% csrf_token %}
+		{{ watch_content_form.as_table }}
+		<div class="row">
+			<div class="col-xs-offset-8 col-xs-4">
+				<input type="submit" value="保存" class="btn btn-primary"/>
+			</div>
+		</div>
+	</form>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends 'message/base.html' %}
+{% load staticfiles %}
+
+{% block ext_css %}
+<link rel="stylesheet" type="text/css" href="{% static "message/css/watch.css" %}">
+{% endblock ext_css %}
+
+{% block content %}
+<div class="row">
+	<div class="col-xs-12">
+		<p class="watch-title">任务:{{ task.name }}</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-offset-4 col-xs-2">
+	<form action="{% url 'task_edit' task.id %}" method="get">
+		<input type="submit" value="编辑" class="btn btn-primary"/>
+	</form>
+	</div>
+	<div class="col-xs-2">
+	<form action="{% url 'task_delete' task.id %}" method="get">
+		<input type="submit" value="删除" class="btn btn-danger"/>
+	</form>
+	</div>
+	<div class="col-xs-2">
+	<form action="{% url 'task_index' %}" method="get">
+		<input type="submit" value="返回" class="btn btn-success"/>
+	</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+	<p>任务信息</p>
+	<table class="table table-striped">
+		<thead class="thead-inverse">
+			<tr>
+				<th>名称</th>
+				<th>取值</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for task_key, task_value in task.items%}
+			<tr>
+				<td>{{ task_key }}</td>
+				<td>{{ task_value }}</td>
+			</tr>
+		{% endfor%}
+		</tbody>
+	</table>
+	</div>
+</div>
+{% endblock content %}
