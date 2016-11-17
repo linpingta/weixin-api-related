@@ -73,7 +73,7 @@ if __name__ == '__main__':
 		wx_client.init(logger)
 
 		# real usage
-		wx_client.send_message(1, u'中文', logger)	
+		wx_client.send_message(1, 'test here', logger)	
 
 		wx_client.release(logger)
 	except Exception,e:

@@ -12,13 +12,14 @@ except ImportError:
 import simplejson as json
 from celery import Celery
 
-from abc import ABCMeta, abstractclass
+from abc import ABCMeta, abstractmethod
 
 from weixin_api.store import WeixinTokenFileStorage
 from weixin_api.token import WeixinToken
 from weixin_api.api import WeixinApi, WeixinResponse
 
 
+basepath = sys.path[0]
 confpath = os.path.join(basepath, 'conf/wx.conf')
 conf = ConfigParser.RawConfigParser()
 conf.read(confpath)
@@ -31,7 +32,7 @@ logger = logging.getLogger('WxManager')
 
 #host = 'redis://HOST' # i.e redis://10.0.0.0
 #port = 'PORT' # i.e 1234
-host = 'redis://101.200.232.118' # i.e redis://10.0.0.0
+host = 'redis://localhost' # i.e redis://10.0.0.0
 port = '6379' # i.e 1234
 db = '0'
 app = Celery('task_info', broker=host+':'+port+'/'+db)
@@ -69,7 +70,7 @@ class WxBasicSender(object):
 
 		self._api = WeixinApi.get_weixin_api()
 
-	@abstractclass
+	@abstractmethod
 	def send(self, agent_id, user_id, wx_message, now, logger):
 		pass
 
@@ -85,7 +86,7 @@ class WxQiyeSender(WxBasicSender):
 
 	def get_qiye_ids_by_task_user_id(self, task_user_id, now, logger):
 		TASK_USER_QIYEID_MAPPING = {
-			1234: [ 'weixin_name' ],
+			1: [ 'chutong' ],
 		}
 
 		if int(task_user_id) not in TASK_USER_QIYEID_MAPPING:
@@ -96,7 +97,7 @@ class WxQiyeSender(WxBasicSender):
 
 	def get_user_name_by_task_user_id(self, task_user_id, logger):
 		TASK_USER_QIYEID_MAPPING = {
-			1234: 'user_name',
+			1: 'user_name',
 		}
 		return TASK_USER_QIYEID_MAPPING[int(task_user_id)] if int(task_user_id) in TASK_USER_QIYEID_MAPPING else 'unknown'
 
@@ -126,16 +127,19 @@ class WxQiyeSender(WxBasicSender):
 def send_message(task_user_id, message_dict):
 	wx_qiye_sender = WxQiyeSender(conf)
 	wx_qiye_sender.init(logger)
+	#wx_qiye_sender.admin_user_ids = ['chutong']
 
 	now = time.localtime()
 	agent_id = "1"
-	user_qiye_ids = wx_qiye_sender.get_qiye_ids_by_task_user_id(task_user_id, now, logger)
-	if not user_qiye_ids:
-		logger.warning("task_user_id[%d] has no related qiye_users" % int(task_user_id))
-	else:
-		logger.info("task_user_id[%d] send message to qiye_users %s" % (int(task_user_id), str(user_qiye_ids))
 
+	user_qiye_ids = []
 	try:
+		user_qiye_ids = wx_qiye_sender.get_qiye_ids_by_task_user_id(int(task_user_id), now, logger)
+		if not user_qiye_ids:
+			logger.warning("task_user_id[%d] has no related qiye_users" % int(task_user_id))
+		else:
+			logger.info("task_user_id[%d] send message to qiye_users %s" % (int(task_user_id), str(user_qiye_ids)))
+
 		user_name = wx_qiye_sender.get_user_name_by_task_user_id(task_user_id, logger)
 		message_body = message_dict['body']
 		object = message_dict['object']
@@ -144,3 +148,17 @@ def send_message(task_user_id, message_dict):
 		logger.exception(e)
 	else:
 		[ wx_qiye_sender.send(agent_id, user_qiye_id, wx_message, now, logger) for user_qiye_id in user_qiye_ids ]
+
+
+if __name__ == '__main__':
+
+	wx_qiye_sender = WxQiyeSender(conf)
+	wx_qiye_sender.init(logger)
+
+	now = time.localtime()
+	agent_id = "1"
+
+	# test
+	user_qiye_id = "chutong"
+	wx_message = u"test"
+	wx_qiye_sender.send(agent_id, user_qiye_id, wx_message, now, logger)

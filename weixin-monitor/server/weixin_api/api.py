@@ -10,8 +10,6 @@ from six.moves import http_client
 import collections
 import six
 
-#app_id = 'wx415f5da962d67dac'
-#app_secret = '152237c90eaccbc1d3f25247859b495d'
 
 class WeixinSession(object):
     def __init__(self, app_id=None, app_secret=None, access_token=None):
