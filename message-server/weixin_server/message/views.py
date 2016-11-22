@@ -25,6 +25,7 @@ def getReplyXml(msg, reply_content):
     extTpl = extTpl % (msg['FromUserName'],msg['ToUserName'],str(int(time.time())),'text',reply_content)
     return extTpl
 
+
 @csrf_exempt
 def index(request):
     if request.method == 'GET':
